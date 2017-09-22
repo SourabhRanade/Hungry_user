@@ -1,5 +1,6 @@
 package com.example.android.hungry_user;
 
+import android.icu.util.GregorianCalendar;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -15,13 +16,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
-
+boolean flag=false;
+    GregorianCalendar calendar;
     String email;
     String password;
+    String name;
+    String email_id;
 
     EditText emailInput;
     EditText passwordInput;
     Button authSubmit;
+
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -35,10 +40,9 @@ public class MainActivity extends AppCompatActivity {
 
         emailInput = (EditText) findViewById(R.id.userEmailInputActivityMain);
         passwordInput = (EditText) findViewById(R.id.userPasswordInputActivityMain);
+        authSubmit=(Button)findViewById(R.id.authenticateButtonActivityMain);
 
 
-        email = emailInput.getText().toString();
-        password = passwordInput.getText().toString();
         mAuthListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -49,10 +53,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-        authSubmit = (Button) findViewById(R.id.authenticateButtonActivityMain);
+
         authSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Button Clicked", Toast.LENGTH_SHORT).show();
                 CreateAccount();
 //                startSignIn();
             }
@@ -73,8 +78,10 @@ public class MainActivity extends AppCompatActivity {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-    private void CreateAccount()
+    public void CreateAccount()
     {
+        email=emailInput.getText().toString();
+        password=passwordInput.getText().toString();
         if (passwordInput.equals("") || emailInput.equals("")) {
 
             Toast.makeText(MainActivity.this, "Fields are empty", Toast.LENGTH_SHORT).show();
@@ -87,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
      {
 
          Toast.makeText(MainActivity.this,"Account Created Successfully",Toast.LENGTH_SHORT).show();
-         userAccess();
+         emailverify();
 
      }
                             // If sign in fails, display a message to the user. If sign in succeeds
@@ -105,37 +112,46 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    private void sendVerificationEmail()
-//    {
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//
-//        user.sendEmailVerification()
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if (task.isSuccessful()) {
-//                            // email sent
-//
-//
-//                            // after email is sent just logout the user and finish this activity
-////                            FirebaseAuth.getInstance().signOut();
+    public void emailverify()
+    {
+
+      final FirebaseUser user = mAuth.getCurrentUser();
+
+        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+
+                        if (task.isSuccessful()) {
+                            // email sent
+                            flag=true;
+                            Toast.makeText(MainActivity.this, "Email sent to"+ user.getEmail(), Toast.LENGTH_SHORT).show();
+                            // after email is sent just logout the user and finish this activity
+//                           mAuth.signOut();
 //                            startActivity(new Intent(MainActivity.this, LoginClass.class));
 //                            finish();
-//                        }
-//                        else
-//                        {
-//                            // email not sent, so display message and restart the activity or do whatever you wish to do
-//
-//                            //restart this activity
-//                            overridePendingTransition(0, 0);
-//                            finish();
-//                            overridePendingTransition(0, 0);
-//                            startActivity(getIntent());
-//
-//                        }
-//                    }
-//                });
-//    }
+
+
+                        }
+                        else
+                        {
+                            // email not sent, so display message and restart the activity or do whatever you wish to do
+
+                            //restart this activity
+                            Toast.makeText(MainActivity.this, "Could not send email please retry", Toast.LENGTH_SHORT).show();
+                            overridePendingTransition(0, 0);
+                            finish();
+                            overridePendingTransition(0, 0);
+                            startActivity(getIntent());
+
+
+                        }
+                    }
+                });
+
+
+
+    }
 //    //Needed only to sign in when already the cunt is created
 //    private void startSignIn() {
 //
@@ -161,19 +177,21 @@ public class MainActivity extends AppCompatActivity {
 //    }
 //
 
-    private void userAccess() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // Name, email address, and profile photo Url
-            String name = user.getDisplayName();
-            String email = user.getEmail();
-
-
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getToken() instead.
-            String uid = user.getUid();
-        }
-
-    }
+//    public void userAccess() {
+//        FirebaseUser user = mAuth.getCurrentUser();
+//        if (user != null) {
+//            // Name, email address, and profile photo Url
+//          name = user.getDisplayName();
+//            email_id = user.getEmail();
+//
+//
+//            // The user's ID, unique to the Firebase project. Do NOT use this value to
+//            // authenticate with your backend server, if you have one. Use
+//            // FirebaseUser.getToken() instead.
+//            String uid = user.getUid();
+//
+//
+//        }
+//
+//    }
 }
