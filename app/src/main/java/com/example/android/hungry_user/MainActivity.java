@@ -45,13 +45,15 @@ Button login;
         authSubmit = (Button) findViewById(R.id.authenticateButtonActivityMain);
         login=(Button)findViewById(R.id.login);
 
+
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
 //                    FirebaseUser user=mAuth.getCurrentUser();
-                    Toast.makeText(MainActivity.this, "USER HAS LOGGED IN", Toast.LENGTH_SHORT).show();
-                   
+//                    Toast.makeText(MainActivity.this, "USER HAS LOGGED IN", Toast.LENGTH_SHORT).show();
+
 
                 }
             }
@@ -82,8 +84,17 @@ Button login;
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+//        mAuth.addAuthStateListener(mAuthListener);
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            Intent onAuthSuccess = new Intent(MainActivity.this, LoginClass.class);
+            startActivity(onAuthSuccess);
+//        }else finish();
+        }
     }
+
+
+
 
     @Override
     public void onStop() {
