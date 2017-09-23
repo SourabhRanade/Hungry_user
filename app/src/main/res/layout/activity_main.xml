@@ -63,9 +63,14 @@
                 android:layout_margin="20dp"
                 android:text="Authenticate"
                 android:padding="8dp"
-                android:textColor="#FFF"
-                android:onClick="createAccount" />
+                 />
 
+            <Button
+                android:id="@+id/login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:layout_gravity="center_horizontal"/>
 
 
         </LinearLayout>
